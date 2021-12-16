@@ -1,4 +1,20 @@
-﻿using System.Collections;
+﻿// ===============================
+// PROGRAM NAME: GAME Programming (T163)
+// STUDENT ID : 101206769
+// AUTHOR     : AMER ALI MOHAMMED
+// CREATE DATE     : Dec 16, 2021
+// PURPOSE     : GAME2014_F2021_FinalTest_101206769
+// SPECIAL NOTES:
+// ===============================
+// Change History:
+// Added calls for floting platform animations
+//==================================
+//==================================
+// Change History:
+// 
+//==================================
+
+using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using Unity.Mathematics;
@@ -15,7 +31,9 @@ public enum ImpulseSounds
     HIT3,
     DIE,
     THROW,
-    GEM
+    GEM,
+    SHRINKING,
+    DESHRINKING
 }
 
 public class PlayerBehaviour : MonoBehaviour
@@ -70,7 +88,9 @@ public class PlayerBehaviour : MonoBehaviour
     private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
     private RaycastHit2D groundHit;
+    private float sensitivity;
     
+
 
     // Start is called before the first frame update
     void Start()
@@ -86,7 +106,7 @@ public class PlayerBehaviour : MonoBehaviour
         dustTrail = GetComponentInChildren<ParticleSystem>();
 
         sounds = GetComponents<AudioSource>();
-
+        
         perlin = vcam1.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
@@ -165,8 +185,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     void _Move()
     {
+        float x = (Input.GetAxisRaw("Horizontal") + joystick.Horizontal) * sensitivity;
         if (isGrounded)
         {
+            float y = (Input.GetAxisRaw("Vertical") + joystick.Vertical) * sensitivity;
             if (!isJumping && !isCrouching)
             {
                 if (joystick.Horizontal > joystickHorizontalSensitivity)
@@ -282,6 +304,15 @@ public class PlayerBehaviour : MonoBehaviour
             other.gameObject.GetComponent<MovingPlatformController>().isActive = true;
             transform.SetParent(other.gameObject.transform);
         }
+
+        if (other.gameObject.CompareTag("Floating Platform")) // Activating the floating platform and enabling the scaling animation.
+        {
+            other.gameObject.GetComponent<FloatingPlatformController>().isActive = true;
+            other.gameObject.GetComponent<FloatingPlatformController>().SetAnimatorOn();
+            sounds[(int)ImpulseSounds.SHRINKING].Play();
+
+
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
@@ -289,7 +320,16 @@ public class PlayerBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("Moving Platform"))
         {
             other.gameObject.GetComponent<MovingPlatformController>().isActive = false;
+
             transform.SetParent(parent);
+        }
+
+        if (other.gameObject.CompareTag("Floating Platform")) // Activating the floating platform and disabling the scaling animation.
+        {
+            other.gameObject.GetComponent<FloatingPlatformController>().isActive = false;
+            other.gameObject.GetComponent<FloatingPlatformController>().SetAnimatorOff();
+            sounds[(int)ImpulseSounds.DESHRINKING].Play();
+
         }
     }
 

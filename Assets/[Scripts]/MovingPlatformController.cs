@@ -50,7 +50,7 @@ public class MovingPlatformController : MonoBehaviour
                 if(!(Vector3.Distance(transform.position, end.position) < threshold))
                 {
                     platformTimer += Time.deltaTime;
-                    _Move();
+                    _Move(); 
                 }
             }
         }
