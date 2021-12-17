@@ -308,7 +308,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("Floating Platform")) // Activating the floating platform and enabling the scaling animation.
         {
             other.gameObject.GetComponent<FloatingPlatformController>().isActive = true;
-            other.gameObject.GetComponent<FloatingPlatformController>().SetAnimatorOn();
+            other.gameObject.GetComponent<FloatingPlatformController>().EnableShrinking();
             sounds[(int)ImpulseSounds.SHRINKING].Play();
 
 
@@ -327,7 +327,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("Floating Platform")) // Activating the floating platform and disabling the scaling animation.
         {
             other.gameObject.GetComponent<FloatingPlatformController>().isActive = false;
-            other.gameObject.GetComponent<FloatingPlatformController>().SetAnimatorOff();
+            other.gameObject.GetComponent<FloatingPlatformController>().DisableShrinking();
             sounds[(int)ImpulseSounds.DESHRINKING].Play();
 
         }
