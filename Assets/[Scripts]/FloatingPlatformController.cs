@@ -27,7 +27,6 @@ public class FloatingPlatformController : MonoBehaviour
     public Transform end;
     public bool isActive;
     public float platformTimer;
-    public float threshold;
     public Animator platformAnimator;
 
     public PlayerBehaviour player;
@@ -47,33 +46,11 @@ public class FloatingPlatformController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        platformTimer += Time.deltaTime;
         _Move();
-        if (isActive)
-        {
-            platformTimer += Time.deltaTime;
-        }
-        else
-        {
-            if (Vector3.Distance(player.transform.position, start.position) <
-                Vector3.Distance(player.transform.position, end.position))
-            {
-                if (!(Vector3.Distance(transform.position, start.position) < threshold))
-                {
-                    platformTimer += Time.deltaTime;
-                    _Move();
-                }
-            }
-            else
-            {
-                if (!(Vector3.Distance(transform.position, end.position) < threshold))
-                {
-                    platformTimer += Time.deltaTime;
-                    _Move();
-                }
-            }
-        }
+     
 
     }
 
@@ -101,8 +78,13 @@ public class FloatingPlatformController : MonoBehaviour
 
     public void DisableShrinking()
     {
+        StartCoroutine(DisableShrink());
+
+    }
+
+    public IEnumerator DisableShrink()
+    {
+        yield return new WaitForSeconds(1);
         platformAnimator.SetBool("IsActive", false);
-
-
     }
 }

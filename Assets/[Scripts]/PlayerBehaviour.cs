@@ -11,7 +11,7 @@
 //==================================
 //==================================
 // Change History:
-// 
+// fixed issues with the platform.
 //==================================
 
 using System.Collections;
@@ -328,11 +328,16 @@ public class PlayerBehaviour : MonoBehaviour
         {
             other.gameObject.GetComponent<FloatingPlatformController>().isActive = false;
             other.gameObject.GetComponent<FloatingPlatformController>().DisableShrinking();
-            sounds[(int)ImpulseSounds.DESHRINKING].Play();
+            StartCoroutine(PlayDeshrinkEffect());
 
         }
     }
 
+    public IEnumerator PlayDeshrinkEffect()
+    {
+        yield return new WaitForSeconds(1);
+        sounds[(int)ImpulseSounds.DESHRINKING].Play();
+    }
 
     private void OnCollisionStay2D(Collision2D other)
     {
